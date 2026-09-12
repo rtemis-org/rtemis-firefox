@@ -7,13 +7,33 @@ const $ = (id) => document.getElementById(id);
 
 /* ---------------- clock ---------------- */
 
-const timeFmt = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" });
-const dateFmt = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" });
+const timeFmt = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+const dateFmt = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+const utcFmt = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "UTC" });
+const zoneFmt = new Intl.DateTimeFormat("en-US", { timeZoneName: "short" });
+
+// Zone abbreviation, e.g. "PDT" (some locales only have "GMT-7"-style names)
+function zoneAbbr(now) {
+  return zoneFmt.formatToParts(now).find((p) => p.type === "timeZoneName")?.value || "";
+}
+
+// Offset from UTC, e.g. "UTC−7" or "UTC+5:30"
+function utcOffset(now) {
+  const mins = -now.getTimezoneOffset();
+  if (mins === 0) return "UTC";
+  const sign = mins < 0 ? "\u2212" : "+";
+  const h = Math.floor(Math.abs(mins) / 60);
+  const m = Math.abs(mins) % 60;
+  return `UTC${sign}${h}${m ? ":" + String(m).padStart(2, "0") : ""}`;
+}
 
 function tickClock() {
   const now = new Date();
   $("clock-time").textContent = timeFmt.format(now);
   $("clock-date").textContent = dateFmt.format(now);
+  $("clock-tz").textContent = zoneAbbr(now);
+  $("clock-zone").textContent = utcOffset(now);
+  $("clock-utc").textContent = utcFmt.format(now);
   // align next tick to the top of the next minute
   setTimeout(tickClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 20);
 }
