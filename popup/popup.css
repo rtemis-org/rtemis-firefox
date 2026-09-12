@@ -1,0 +1,145 @@
+/* rtemis toolbar popup — palette mirrors newtab.css */
+
+:root {
+  color-scheme: light dark;
+
+  --fg: rgb(51, 51, 51);
+  --fg-muted: rgb(110, 110, 110);
+  --fg-faint: rgb(150, 150, 150);
+  --accent: rgb(108, 163, 160);
+  --bg: rgb(244, 244, 244);
+  --border: rgba(0, 0, 0, 0.08);
+  --hover-bg: rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: rgb(204, 204, 204);
+    --fg-muted: rgb(150, 150, 150);
+    --fg-faint: rgb(110, 110, 110);
+    --bg: rgb(36, 36, 36);
+    --border: rgba(255, 255, 255, 0.08);
+    --hover-bg: rgba(255, 255, 255, 0.08);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 260px;
+  margin: 0;
+  padding: 6px 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- header ---------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 8px;
+}
+.mark { flex: none; display: block; }
+.title { font-weight: 600; letter-spacing: .01em; }
+
+/* ---------- sections ---------- */
+
+.section {
+  border-top: 1px solid var(--border);
+  padding: 6px 0;
+}
+.label {
+  padding: 2px 14px 6px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--fg-faint);
+}
+
+/* ---------- theme switch ---------- */
+
+.theme-switch {
+  display: flex;
+  gap: 2px;
+  margin: 0 14px 4px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+.theme-switch button {
+  flex: 1;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg-faint);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 150ms, background-color 150ms;
+}
+.theme-switch button:hover { color: var(--fg); background: var(--hover-bg); }
+.theme-switch button[aria-checked="true"] {
+  color: var(--fg);
+  background: var(--hover-bg);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.theme-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ---------- rows ---------- */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+.row:hover { background: var(--hover-bg); }
+.row .url { font-size: 11px; color: var(--fg-faint); }
+
+/* ---------- docs dropdown ---------- */
+
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
+.chev { color: var(--fg-faint); transition: transform 150ms; }
+.docs[open] .chev { transform: rotate(180deg); }
+
+.docs-list { padding: 2px 0 4px; }
+.doc-group {
+  padding: 8px 14px 2px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--fg-faint);
+}
+.doc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 14px 5px 22px;
+}
+a.doc:hover { background: var(--hover-bg); }
+.doc-name { color: var(--fg-muted); }
+.dim { color: var(--fg-faint); }
+.doc-links { display: flex; gap: 4px; }
+.doc-links a {
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 150ms, border-color 150ms, background-color 150ms;
+}
+.doc-links a:hover { color: var(--fg); border-color: var(--accent); background: var(--hover-bg); }
