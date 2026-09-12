@@ -17,15 +17,17 @@ const Search = (() => {
 
   /* --- engine selection --- */
 
+  // Note: SVG elements have no `hidden` property, so toggle the attribute.
   function setIcon(img, fallback, url) {
+    const show = (el, on) => el.toggleAttribute("hidden", !on);
     if (url) {
       img.src = url;
-      img.hidden = false;
-      fallback.hidden = true;
-      img.onerror = () => { img.hidden = true; fallback.hidden = false; };
+      show(img, true);
+      show(fallback, false);
+      img.onerror = () => { show(img, false); show(fallback, true); };
     } else {
-      img.hidden = true;
-      fallback.hidden = false;
+      show(img, false);
+      show(fallback, true);
     }
   }
 
