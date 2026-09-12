@@ -22,7 +22,8 @@
   },
   "permissions": [
     "theme",
-    "storage"
+    "storage",
+    "search"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab/newtab.html"
