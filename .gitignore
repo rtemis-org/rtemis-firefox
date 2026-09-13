@@ -11,3 +11,8 @@ __dev/
 # Zed
 .zed/
 
+
+# Build output
+*.xpi
+*.zip
+web-ext-artifacts/

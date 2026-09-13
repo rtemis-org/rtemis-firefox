@@ -141,8 +141,8 @@ function esc(s) {
 function pick(i) {
   const r = results[i];
   if (!r) return;
-  const name = r.admin && r.admin !== r.name ? `${r.name}, ${r.admin}` : r.name;
-  saveLocation({ name, lat: r.lat, lon: r.lon });
+  // City only, matching what reverseName() returns for "Use my location".
+  saveLocation({ name: r.name, lat: r.lat, lon: r.lon });
 }
 
 $("city-input").addEventListener("input", (e) => {

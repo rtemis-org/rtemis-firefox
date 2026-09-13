@@ -1,8 +1,19 @@
 {
   "manifest_version": 2,
   "name": "rtemis",
-  "version": "2.1",
+  "version": "1.0",
   "description": "rtemis theme with light and dark modes, and a new tab page with weather and clock",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "rtemis@rtemis.org",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": [
+          "locationInfo"
+        ]
+      }
+    }
+  },
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png"
@@ -17,7 +28,7 @@
   },
   "background": {
     "scripts": [
-      "styles.js"
+      "background.js"
     ]
   },
   "permissions": [

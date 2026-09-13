@@ -7,6 +7,8 @@
 </head>
 <body>
 
+<div class="main">
+
   <header class="head">
     <img class="mark" src="../icons/favicon.svg" width="20" height="20" alt="">
     <span class="title">rtemis</span>
@@ -31,11 +33,18 @@
     </a>
   </nav>
 
-  <details class="section docs" id="docs">
-    <summary class="row">
+  <section class="section">
+    <button type="button" class="row docs-toggle" id="docs-toggle" aria-expanded="false" aria-controls="docs-panel">
       <span>Docs</span>
-      <svg class="chev" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M4 6l4 4 4-4"/></svg>
-    </summary>
+      <svg class="chev" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M6 4l4 4-4 4"/></svg>
+    </button>
+  </section>
+
+</div>
+
+  <!-- Docs pane, shown as a second column to the right of the menu -->
+  <aside class="flyout" id="docs-panel" hidden aria-label="rtemis docs">
+    <header class="head"><span class="title">Docs</span></header>
     <div class="docs-list">
       <a class="doc" href="https://docs.rtemis.org">
         <span class="doc-name">docs.rtemis.org</span>
@@ -77,7 +86,7 @@
         </span>
       </div>
     </div>
-  </details>
+  </aside>
 
   <script src="popup.js"></script>
 </body>
