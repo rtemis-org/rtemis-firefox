@@ -43,8 +43,12 @@ function tickClock() {
 const card = $("weather-card");
 const setState = (s) => { card.dataset.state = s; };
 
-function fmtTemp(c) { return `${Math.round(c)}°`; }
 function fmtTempBoth(c) { return `${Math.round(c)}°C / ${Math.round(Weather.cToF(c))}°F`; }
+// High/low as two arrow-prefixed spans (values are numeric, safe for innerHTML)
+function fmtHiLo(hiC, loC) {
+  return `<span class="hilo"><span class="hilo-arrow" aria-hidden="true">↑</span><span class="visually-hidden">High </span>${fmtTempBoth(hiC)}</span>` +
+         `<span class="hilo"><span class="hilo-arrow" aria-hidden="true">↓</span><span class="visually-hidden">Low </span>${fmtTempBoth(loC)}</span>`;
+}
 
 function render(w, place, stale) {
   $("w-place").textContent = place;
@@ -53,7 +57,7 @@ function render(w, place, stale) {
   $("w-temp-f").textContent = Math.round(Weather.cToF(w.tempC));
   $("w-cond").textContent = w.label;
   $("w-feels").textContent = fmtTempBoth(w.feelsC);
-  $("w-hilo").textContent = `${fmtTemp(w.hiC)} / ${fmtTemp(w.loC)}`;
+  $("w-hilo").innerHTML = fmtHiLo(w.hiC, w.loC);
   $("w-hum").textContent = `${Math.round(w.humidity)}%`;
   $("w-wind-dir").textContent = Weather.compass(w.windDir);
   $("w-wind").textContent = `${Math.round(w.windKmh)} km/h · ${Math.round(Weather.kmhToMph(w.windKmh))} mph`;
