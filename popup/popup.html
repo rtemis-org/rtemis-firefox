@@ -7,8 +7,6 @@
 </head>
 <body>
 
-<div class="main">
-
   <header class="head">
     <img class="mark" src="../icons/favicon.svg" width="20" height="20" alt="">
     <span class="title">rtemis</span>
@@ -24,69 +22,51 @@
     </div>
   </section>
 
-  <nav class="section links" aria-label="rtemis sites">
-    <a class="row" href="https://www.rtemis.org">
-      <span>rtemis.org</span><span class="url">www.rtemis.org</span>
-    </a>
-    <a class="row" href="https://live.rtemis.org">
-      <span>rtemis live</span><span class="url">live.rtemis.org</span>
-    </a>
+  <nav class="section" aria-label="rtemis links">
+    <div class="label">Links</div>
+    <a class="row" href="https://www.rtemis.org">rtemis home</a>
+    <a class="row" href="https://live.rtemis.org">rtemislive</a>
   </nav>
 
-  <section class="section">
-    <button type="button" class="row docs-toggle" id="docs-toggle" aria-expanded="false" aria-controls="docs-panel">
-      <span>Docs</span>
-      <svg class="chev" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M6 4l4 4-4 4"/></svg>
-    </button>
-  </section>
-
-</div>
-
-  <!-- Docs pane, shown as a second column to the right of the menu -->
-  <aside class="flyout" id="docs-panel" hidden aria-label="rtemis docs">
-    <header class="head"><span class="title">Docs</span></header>
-    <div class="docs-list">
-      <a class="doc" href="https://docs.rtemis.org">
-        <span class="doc-name">docs.rtemis.org</span>
-      </a>
-      <div class="doc-group">R</div>
-      <div class="doc">
-        <span class="doc-name">rtemis <span class="dim">ML</span></span>
-        <span class="doc-links">
-          <a href="https://docs.rtemis.org/r/ml">Guide</a>
-          <a href="https://docs.rtemis.org/r/ml-api">API</a>
-        </span>
-      </div>
-      <div class="doc">
-        <span class="doc-name">rtemis.llm</span>
-        <span class="doc-links">
-          <a href="https://docs.rtemis.org/r/llm">Guide</a>
-          <a href="https://docs.rtemis.org/r/llm-api">API</a>
-        </span>
-      </div>
-      <div class="doc">
-        <span class="doc-name">rtemis.draw</span>
-        <span class="doc-links">
-          <a href="https://docs.rtemis.org/r/draw">Guide</a>
-          <a href="https://docs.rtemis.org/r/draw-api">API</a>
-        </span>
-      </div>
-      <div class="doc">
-        <span class="doc-name">curriculum</span>
-        <span class="doc-links">
-          <a href="https://docs.rtemis.org/r/curriculum">Guide</a>
-          <a href="https://docs.rtemis.org/r/curriculum-api">API</a>
-        </span>
-      </div>
-      <div class="doc-group">CLI</div>
-      <div class="doc">
-        <span class="doc-name">rtemis CLI</span>
-        <span class="doc-links">
-          <a href="https://docs.rtemis.org/cli">Guide</a>
-        </span>
-      </div>
+  <section class="section" aria-label="rtemis docs">
+    <div class="label">Docs</div>
+    <div class="doc-group">R</div>
+    <div class="doc">
+      <span class="doc-name">rtemis <span class="dim">ML</span></span>
+      <span class="doc-links">
+        <a href="https://docs.rtemis.org/r/ml">Guide</a>
+        <a href="https://docs.rtemis.org/r/ml-api">API</a>
+      </span>
     </div>
-  </aside>
+    <div class="doc">
+      <span class="doc-name">rtemis.llm</span>
+      <span class="doc-links">
+        <a href="https://docs.rtemis.org/r/llm">Guide</a>
+        <a href="https://docs.rtemis.org/r/llm-api">API</a>
+      </span>
+    </div>
+    <div class="doc">
+      <span class="doc-name">rtemis.draw</span>
+      <span class="doc-links">
+        <a href="https://docs.rtemis.org/r/draw">Guide</a>
+        <a href="https://docs.rtemis.org/r/draw-api">API</a>
+      </span>
+    </div>
+    <div class="doc">
+      <span class="doc-name">curriculum</span>
+      <span class="doc-links">
+        <a href="https://docs.rtemis.org/r/curriculum">Guide</a>
+        <a href="https://docs.rtemis.org/r/curriculum-api">API</a>
+      </span>
+    </div>
+    <div class="doc-group">CLI</div>
+    <div class="doc">
+      <span class="doc-name">rtemis CLI</span>
+      <span class="doc-links">
+        <a href="https://docs.rtemis.org/cli">Guide</a>
+      </span>
+    </div>
+  </section>
 
   <script src="popup.js"></script>
 </body>

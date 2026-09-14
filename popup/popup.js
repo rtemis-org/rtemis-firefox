@@ -37,27 +37,6 @@ document.addEventListener("click", (e) => {
   window.close();
 });
 
-/* ---------------- docs flyout ---------------- */
-
-// The docs list opens as a second pane to the right of the menu.
-// Open state is remembered across popup openings.
-const docsToggle = $("docs-toggle");
-const docsPanel = $("docs-panel");
-
-function setDocsOpen(open) {
-  docsToggle.setAttribute("aria-expanded", String(open));
-  docsPanel.hidden = !open;
-}
-
-docsToggle.addEventListener("click", () => {
-  const open = docsToggle.getAttribute("aria-expanded") !== "true";
-  setDocsOpen(open);
-  browser.storage.local.set({ popupDocsOpen: open });
-});
-
 /* ---------------- init ---------------- */
 
 loadThemeMode();
-browser.storage.local.get("popupDocsOpen").then(({ popupDocsOpen }) => {
-  setDocsOpen(Boolean(popupDocsOpen));
-});

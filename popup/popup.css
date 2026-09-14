@@ -1,36 +1,60 @@
-/* rtemis toolbar popup — palette mirrors newtab.css */
+/* rtemis toolbar popup.
+   Surface colors mirror the `popup` theme colors in background.js so this menu
+   matches the browser's own menus: lighter than the page in dark mode, darker
+   in light mode. Text colors are tuned for that surface, not the newtab page. */
 
 :root {
   color-scheme: light dark;
 
   --fg: rgb(51, 51, 51);
-  --fg-muted: rgb(110, 110, 110);
-  --fg-faint: rgb(150, 150, 150);
+  --fg-muted: rgb(85, 85, 85);
+  --fg-faint: rgb(110, 110, 110);
   --accent: rgb(108, 163, 160);
-  --bg: rgb(244, 244, 244);
-  --border: rgba(0, 0, 0, 0.08);
-  --hover-bg: rgba(0, 0, 0, 0.06);
+  --bg: rgb(199, 199, 199);
+  --border: rgba(0, 0, 0, 0.12);
+  --hover-bg: rgba(0, 0, 0, 0.07);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --fg: rgb(204, 204, 204);
-    --fg-muted: rgb(150, 150, 150);
-    --fg-faint: rgb(110, 110, 110);
-    --bg: rgb(36, 36, 36);
-    --border: rgba(255, 255, 255, 0.08);
+    --fg-muted: rgb(165, 165, 165);
+    --fg-faint: rgb(130, 130, 130);
+    --bg: rgb(56, 56, 56);
+    --border: rgba(255, 255, 255, 0.10);
     --hover-bg: rgba(255, 255, 255, 0.08);
   }
 }
 
-* { box-sizing: border-box; }
+/* Alternative: inverted surface — a light-gray menu in dark mode and a dark
+   menu in light mode. Try it with <html data-surface="inverted"> in popup.html;
+   delete whichever of the two looks worse. */
+html[data-surface="inverted"] {
+  --fg: rgb(220, 220, 220);
+  --fg-muted: rgb(175, 175, 175);
+  --fg-faint: rgb(135, 135, 135);
+  --bg: rgb(52, 52, 52);
+  --border: rgba(255, 255, 255, 0.10);
+  --hover-bg: rgba(255, 255, 255, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  html[data-surface="inverted"] {
+    --fg: rgb(38, 38, 38);
+    --fg-muted: rgb(80, 80, 80);
+    --fg-faint: rgb(110, 110, 110);
+    --bg: rgb(196, 196, 196);
+    --border: rgba(0, 0, 0, 0.12);
+    --hover-bg: rgba(0, 0, 0, 0.07);
+  }
+}
 
-/* Two columns: the main menu, and a docs flyout that opens to its right.
-   The popup grows to fit, so its width follows whether the flyout is shown. */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+/* Fixed width: the popup is anchored to the toolbar button, so any change in
+   width would shift the whole menu. */
 body {
-  display: flex;
-  align-items: stretch;
-  width: max-content;
+  width: 260px;
   margin: 0;
   padding: 6px 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -42,8 +66,6 @@ body {
 }
 
 a { color: inherit; text-decoration: none; }
-
-.main { width: 260px; flex: none; }
 
 /* ---------- header ---------- */
 
@@ -112,42 +134,17 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
 }
 .row:hover { background: var(--hover-bg); }
-.row .url { font-size: 11px; color: var(--fg-faint); }
 
-button.row {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-}
-button.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* ---------- docs ---------- */
 
-/* ---------- docs flyout ---------- */
-
-.chev { color: var(--fg-faint); transition: color 150ms; }
-.docs-toggle[aria-expanded="true"] { background: var(--hover-bg); }
-.docs-toggle[aria-expanded="true"] .chev { color: var(--accent); }
-
-.flyout {
-  width: 240px;
-  flex: none;
-  border-left: 1px solid var(--border);
-}
-.flyout .head { padding-bottom: 8px; }
-
-.docs-list {
-  padding: 6px 0;
-  border-top: 1px solid var(--border);
-}
 .doc-group {
-  padding: 8px 14px 2px;
+  padding: 6px 14px 2px;
   font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: .06em;
   color: var(--fg-faint);
 }
+.label + .doc-group { padding-top: 0; }
 .doc {
   display: flex;
   align-items: center;
@@ -155,7 +152,6 @@ button.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2p
   gap: 8px;
   padding: 5px 14px;
 }
-a.doc:hover { background: var(--hover-bg); }
 .doc-name { color: var(--fg-muted); }
 .dim { color: var(--fg-faint); }
 .doc-links { display: flex; gap: 4px; }
