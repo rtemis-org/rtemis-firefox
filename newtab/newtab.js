@@ -44,20 +44,16 @@ const card = $("weather-card");
 const setState = (s) => { card.dataset.state = s; };
 
 function fmtTempBoth(c) { return `${Math.round(c)}°C / ${Math.round(Weather.cToF(c))}°F`; }
-// High/low as two arrow-prefixed spans (values are numeric, safe for innerHTML)
-function fmtHiLo(hiC, loC) {
-  return `<span class="hilo"><span class="hilo-arrow" aria-hidden="true">↑</span><span class="visually-hidden">High </span>${fmtTempBoth(hiC)}</span>` +
-         `<span class="hilo"><span class="hilo-arrow" aria-hidden="true">↓</span><span class="visually-hidden">Low </span>${fmtTempBoth(loC)}</span>`;
-}
 
 function render(w, place, stale) {
   $("w-place").textContent = place;
-  $("w-icon").innerHTML = Weather.icon(w.iconKey, w.isDay);
+  $("w-icon").setAttribute("href", Weather.iconRef(w.iconKey, w.isDay));
   $("w-temp-c").textContent = Math.round(w.tempC);
   $("w-temp-f").textContent = Math.round(Weather.cToF(w.tempC));
   $("w-cond").textContent = w.label;
   $("w-feels").textContent = fmtTempBoth(w.feelsC);
-  $("w-hilo").innerHTML = fmtHiLo(w.hiC, w.loC);
+  $("w-hi").textContent = fmtTempBoth(w.hiC);
+  $("w-lo").textContent = fmtTempBoth(w.loC);
   $("w-hum").textContent = `${Math.round(w.humidity)}%`;
   $("w-wind-dir").textContent = Weather.compass(w.windDir);
   $("w-wind").textContent = `${Math.round(w.windKmh)} km/h · ${Math.round(Weather.kmhToMph(w.windKmh))} mph`;
@@ -113,7 +109,7 @@ async function saveLocation(loc) {
   await browser.storage.local.set({ location: loc });
   await browser.storage.local.remove("weather");
   $("city-input").value = "";
-  $("city-results").innerHTML = "";
+  $("city-results").replaceChildren();
   $("setup-error").textContent = "";
   $("setup-cancel").hidden = true;
   loadWeather({ force: true });
@@ -127,19 +123,20 @@ let selected = -1;
 
 function renderResults() {
   const ul = $("city-results");
-  ul.innerHTML = "";
+  ul.replaceChildren();
   results.forEach((r, i) => {
     const li = document.createElement("li");
     li.setAttribute("role", "option");
     li.setAttribute("aria-selected", i === selected ? "true" : "false");
-    li.innerHTML = `<div>${esc(r.name)}</div><div class="sub">${esc([r.admin, r.country].filter(Boolean).join(", "))}</div>`;
+    const name = document.createElement("div");
+    name.textContent = r.name;
+    const sub = document.createElement("div");
+    sub.className = "sub";
+    sub.textContent = [r.admin, r.country].filter(Boolean).join(", ");
+    li.append(name, sub);
     li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(i); });
     ul.appendChild(li);
   });
-}
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 function pick(i) {

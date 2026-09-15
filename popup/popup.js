@@ -4,7 +4,7 @@ const $ = (id) => document.getElementById(id);
 
 /* ---------------- theme mode ---------------- */
 
-// Mirrors THEME_MODES in styles.js, which applies the theme when this changes.
+// Mirrors THEME_MODES in background.js, which applies the theme when this changes.
 const THEME_MODES = ["system", "light", "dark"];
 const themeSwitch = $("theme-switch");
 

@@ -57,7 +57,9 @@
       </header>
 
       <div class="weather-main">
-        <div class="weather-icon" id="w-icon" aria-hidden="true"></div>
+        <div class="weather-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use id="w-icon" href="#wi-cloud"/></svg>
+        </div>
         <div class="weather-temps">
           <div class="temp-row">
             <span class="temp-c" id="w-temp-c">--</span><span class="unit">°C</span>
@@ -70,7 +72,10 @@
 
       <dl class="weather-grid">
         <div><dt>Feels like</dt><dd id="w-feels"></dd></div>
-        <div><dt>Today</dt><dd id="w-hilo"></dd></div>
+        <div><dt>Today</dt><dd class="w-hilo">
+          <span class="hilo"><span class="hilo-arrow" aria-hidden="true">↑</span><span class="visually-hidden">High </span><span id="w-hi"></span></span>
+          <span class="hilo"><span class="hilo-arrow" aria-hidden="true">↓</span><span class="visually-hidden">Low </span><span id="w-lo"></span></span>
+        </dd></div>
         <div><dt>Humidity</dt><dd id="w-hum"></dd></div>
         <div><dt>Wind <span id="w-wind-dir"></span></dt><dd id="w-wind"></dd></div>
       </dl>
@@ -134,6 +139,21 @@
       <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
     </button>
   </div>
+
+  <!-- Weather icon sprite (24x24 line icons); weather.js picks the symbol id -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="wi-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="wi-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="wi-cloud-sun" viewBox="0 0 24 24"><circle cx="16.5" cy="7.5" r="2.5"/><path d="M16.5 2.5v1.2M21.5 7.5h-1.2M20 4l-.9.9M20 11l-.9-.9M13 4l.9.9"/><path d="M6 20h8.5a3.5 3.5 0 0 0 .4-6.98A5 5 0 0 0 5.3 14.4 2.8 2.8 0 0 0 6 20z"/></symbol>
+    <symbol id="wi-cloud-moon" viewBox="0 0 24 24"><path d="M19.5 9.2A4 4 0 0 1 14.8 4.5a4 4 0 1 0 4.7 4.7z"/><path d="M6 20h8.5a3.5 3.5 0 0 0 .4-6.98A5 5 0 0 0 5.3 14.4 2.8 2.8 0 0 0 6 20z"/></symbol>
+    <symbol id="wi-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 11.5 3.5 3.5 0 0 0 7 18z"/></symbol>
+    <symbol id="wi-fog" viewBox="0 0 24 24"><path d="M7 14h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 7.5 3.5 3.5 0 0 0 7 14z"/><path d="M6 18h12M8 21h8"/></symbol>
+    <symbol id="wi-drizzle" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M9 18.5v1.5M12 18.5v1.5M15 18.5v1.5"/></symbol>
+    <symbol id="wi-rain" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M9 18l-1 3M13 18l-1 3M17 18l-1 3"/></symbol>
+    <symbol id="wi-sleet" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M9 18l-1 3M16 18.5v.01M12.5 20.5v.01M15 21.5v.01"/></symbol>
+    <symbol id="wi-snow" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M8 18.5v.01M12 18.5v.01M16 18.5v.01M10 21v.01M14 21v.01"/></symbol>
+    <symbol id="wi-storm" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M13 14l-2.5 4H14l-2.5 4"/></symbol>
+  </svg>
 
   <script src="weather.js"></script>
   <script src="search.js"></script>

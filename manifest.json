@@ -2,7 +2,8 @@
   "manifest_version": 2,
   "name": "rtemis",
   "version": "1.0",
-  "description": "rtemis theme with light and dark modes, and a new tab page with weather and clock",
+  "description": "rtemis color theme with system, light, and dark modes, plus a new tab page with clock, weather, search, and optional Hacker News.",
+  "homepage_url": "https://github.com/rtemis-org/rtemis-firefox",
   "browser_specific_settings": {
     "gecko": {
       "id": "rtemis@rtemis.org",

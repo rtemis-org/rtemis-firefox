@@ -53,14 +53,19 @@ const News = (() => {
 
   /* --- rendering --- */
 
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
   }
 
   function renderSkeleton() {
-    list.innerHTML = Array.from({ length: 5 }, () =>
-      '<li class="sk"><div class="skeleton sk-line w-80"></div><div class="skeleton sk-line w-40"></div></li>'
-    ).join("");
+    list.replaceChildren(...Array.from({ length: 5 }, () => {
+      const li = el("li", "sk");
+      li.append(el("div", "skeleton sk-line w-80"), el("div", "skeleton sk-line w-40"));
+      return li;
+    }));
   }
 
   // Fade the bottom edge while there is more to scroll.
@@ -72,11 +77,18 @@ const News = (() => {
   window.addEventListener("resize", updateScrollHint);
 
   function render(items) {
-    list.innerHTML = items.map((it) => `
-      <li>
-        <a class="news-link" href="${esc(it.url)}" title="${esc(it.title)}">${esc(it.title)}</a>
-        <span class="news-meta">${esc(it.domain)} · ${it.score} pts · <a href="${esc(it.hn)}">${it.comments} comments</a></span>
-      </li>`).join("");
+    list.replaceChildren(...items.map((it) => {
+      const li = el("li");
+      const link = el("a", "news-link", it.title);
+      link.href = it.url;
+      link.title = it.title;
+      const comments = el("a", null, `${it.comments} comments`);
+      comments.href = it.hn;
+      const meta = el("span", "news-meta", `${it.domain} · ${it.score} pts · `);
+      meta.append(comments);
+      li.append(link, meta);
+      return li;
+    }));
     requestAnimationFrame(updateScrollHint);
   }
 
@@ -104,7 +116,7 @@ const News = (() => {
     } catch (err) {
       console.warn("news fetch failed:", err);
       if (news?.items?.length) setStatus("Offline · showing cached stories");
-      else { list.innerHTML = ""; setStatus("Couldn't reach Hacker News.", true); }
+      else { list.replaceChildren(); setStatus("Couldn't reach Hacker News.", true); }
     }
   }
 

@@ -1,7 +1,9 @@
 /* rtemis toolbar popup.
-   Surface colors mirror the `popup` theme colors in background.js so this menu
-   matches the browser's own menus: lighter than the page in dark mode, darker
-   in light mode. Text colors are tuned for that surface, not the newtab page. */
+   Surface colors follow the `popup` theme colors in background.js so this menu
+   sits with the browser's own menus: lighter than the page in dark mode, darker
+   in light mode. The light surface is lifted a step above the theme's popup
+   gray so the menu reads as a panel rather than a shadow. Text colors are tuned
+   for that surface, not the newtab page. */
 
 :root {
   color-scheme: light dark;
@@ -10,7 +12,7 @@
   --fg-muted: rgb(85, 85, 85);
   --fg-faint: rgb(110, 110, 110);
   --accent: rgb(108, 163, 160);
-  --bg: rgb(199, 199, 199);
+  --bg: rgb(216, 216, 216);
   --border: rgba(0, 0, 0, 0.12);
   --hover-bg: rgba(0, 0, 0, 0.07);
 }

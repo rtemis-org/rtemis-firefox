@@ -37,7 +37,7 @@ const Search = (() => {
   }
 
   function renderMenu() {
-    menu.innerHTML = "";
+    menu.replaceChildren();
     engines.forEach((e, i) => {
       const li = document.createElement("li");
       li.setAttribute("role", "option");

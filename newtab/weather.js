@@ -1,4 +1,4 @@
-// Open-Meteo client: forecast, geocoding, WMO code mapping, icons.
+// Open-Meteo client: forecast, geocoding, WMO code mapping, icon lookup.
 // No API key; responses carry Access-Control-Allow-Origin: * so no host permission is needed.
 
 const Weather = (() => {
@@ -38,29 +38,15 @@ const Weather = (() => {
     99: ["Thunderstorm, hail", "storm"],
   };
 
-  // Minimal line icons, 24x24, stroke = currentColor
-  const S = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
-  const cloud = `<path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 11.5 3.5 3.5 0 0 0 7 18z"/>`;
-  const ICONS = {
-    "sun": `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>`,
-    "moon": `<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>`,
-    "cloud-sun": `<circle cx="16.5" cy="7.5" r="2.5"/><path d="M16.5 2.5v1.2M21.5 7.5h-1.2M20 4l-.9.9M20 11l-.9-.9M13 4l.9.9"/><path d="M6 20h8.5a3.5 3.5 0 0 0 .4-6.98A5 5 0 0 0 5.3 14.4 2.8 2.8 0 0 0 6 20z"/>`,
-    "cloud-moon": `<path d="M19.5 9.2A4 4 0 0 1 14.8 4.5a4 4 0 1 0 4.7 4.7z"/><path d="M6 20h8.5a3.5 3.5 0 0 0 .4-6.98A5 5 0 0 0 5.3 14.4 2.8 2.8 0 0 0 6 20z"/>`,
-    "cloud": cloud,
-    "fog": `<path d="M7 14h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 7.5 3.5 3.5 0 0 0 7 14z"/><path d="M6 18h12M8 21h8"/>`,
-    "drizzle": `<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M9 18.5v1.5M12 18.5v1.5M15 18.5v1.5"/>`,
-    "rain": `<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M9 18l-1 3M13 18l-1 3M17 18l-1 3"/>`,
-    "sleet": `<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M9 18l-1 3M16 18.5v.01M12.5 20.5v.01M15 21.5v.01"/>`,
-    "snow": `<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M8 18.5v.01M12 18.5v.01M16 18.5v.01M10 21v.01M14 21v.01"/>`,
-    "storm": `<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 8.5 3.5 3.5 0 0 0 7 15z"/><path d="M13 14l-2.5 4H14l-2.5 4"/>`,
-  };
+  // Icons are <symbol>s in newtab.html's sprite (ids "wi-<key>"); return the href for <use>.
+  const ICON_KEYS = new Set(["sun", "moon", "cloud-sun", "cloud-moon", "cloud", "fog", "drizzle", "rain", "sleet", "snow", "storm"]);
 
-  function icon(key, isDay) {
+  function iconRef(key, isDay) {
     if (!isDay) {
       if (key === "sun") key = "moon";
       else if (key === "cloud-sun") key = "cloud-moon";
     }
-    return `<svg viewBox="0 0 24 24" ${S} aria-hidden="true">${ICONS[key] || ICONS.cloud}</svg>`;
+    return `#wi-${ICON_KEYS.has(key) ? key : "cloud"}`;
   }
 
   function describe(code) {
@@ -147,5 +133,5 @@ const Weather = (() => {
     }
   }
 
-  return { fetchForecast, geocode, reverseName, icon, describe, cToF, kmhToMph, compass };
+  return { fetchForecast, geocode, reverseName, iconRef, describe, cToF, kmhToMph, compass };
 })();
