@@ -35,4 +35,4 @@ Firefox asks for your permission each time.
 
 ## Contact
 
-stathis@rtemis.org
+Questions about this policy: https://github.com/rtemis-org/rtemis-firefox/issues
