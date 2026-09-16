@@ -16,13 +16,13 @@
     }
   },
   "icons": {
-    "48": "icons/icon-48.png",
-    "96": "icons/icon-96.png"
+    "48": "icons/favicon.svg",
+    "96": "icons/favicon.svg"
   },
   "browser_action": {
     "default_icon": {
-      "48": "icons/icon-48.png",
-      "96": "icons/icon-96.png"
+      "16": "icons/favicon.svg",
+      "32": "icons/favicon.svg"
     },
     "default_title": "rtemis",
     "default_popup": "popup/popup.html"
