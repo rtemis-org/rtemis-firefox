@@ -345,6 +345,9 @@ browser.storage.onChanged.addListener((changes, area) => {
 
 /* ---------------- init ---------------- */
 
+const backgroundWaves = $("background-waves");
+backgroundWaves.dataset.paused = String(document.hidden);
+
 tickClock();
 loadWeather();
 loadThemeMode();
@@ -355,5 +358,6 @@ setInterval(() => {
 }, 60000);
 
 document.addEventListener("visibilitychange", () => {
+  backgroundWaves.dataset.paused = String(document.hidden);
   if (!document.hidden && card.dataset.state === "live") loadWeather();
 });

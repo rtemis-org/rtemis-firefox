@@ -9,6 +9,42 @@
 </head>
 <body>
 
+  <!-- Decorative shoreline curves in the shared teal accent. -->
+  <svg class="background-waves" id="background-waves" viewBox="0 0 1600 520" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="wave-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="white"/>
+        <stop offset="0.65" stop-color="white" stop-opacity="0.55"/>
+        <stop offset="1" stop-color="white" stop-opacity="0.08"/>
+      </linearGradient>
+      <mask id="wave-mask" maskUnits="userSpaceOnUse" x="-160" y="-40" width="1920" height="640" style="mask-type: alpha">
+        <rect x="-160" y="0" width="1920" height="520" fill="url(#wave-fade)"/>
+      </mask>
+    </defs>
+    <g mask="url(#wave-mask)">
+      <g class="wave-layer wave-layer-1">
+        <path class="wave-fill" d="M-160 142 C130 65 390 104 650 150 S1190 238 1760 100 V600 H-160 Z"/>
+        <path class="wave-line" d="M-160 142 C130 65 390 104 650 150 S1190 238 1760 100"/>
+      </g>
+      <g class="wave-layer wave-layer-2">
+        <path class="wave-fill" d="M-160 224 C170 288 395 136 730 191 S1310 290 1760 196 V600 H-160 Z"/>
+        <path class="wave-line" d="M-160 224 C170 288 395 136 730 191 S1310 290 1760 196"/>
+      </g>
+      <g class="wave-layer wave-layer-3">
+        <path class="wave-fill" d="M-160 306 C185 179 535 342 845 275 S1400 223 1760 319 V600 H-160 Z"/>
+        <path class="wave-line" d="M-160 306 C185 179 535 342 845 275 S1400 223 1760 319"/>
+      </g>
+      <g class="wave-layer wave-layer-4">
+        <path class="wave-fill" d="M-160 350 C200 425 530 270 875 331 S1420 417 1760 350 V600 H-160 Z"/>
+        <path class="wave-line" d="M-160 350 C200 425 530 270 875 331 S1420 417 1760 350"/>
+      </g>
+      <g class="wave-layer wave-layer-5">
+        <path class="wave-fill" d="M-160 433 C175 347 505 462 860 405 S1390 355 1760 453 V600 H-160 Z"/>
+        <path class="wave-line" d="M-160 433 C175 347 505 462 860 405 S1390 355 1760 453"/>
+      </g>
+    </g>
+  </svg>
+
   <!-- Top-left: clock + date -->
   <section class="card card-clock" id="clock-card" aria-label="Clock">
     <div class="clock-tz" id="clock-tz"></div>

@@ -4,6 +4,10 @@ Firefox extension that applies the rtemis color theme (system / light / dark) an
 replaces the new tab page with a clock, weather, search, and an optional
 Hacker News panel.
 
+The new tab background uses faint SVG waves in the shared teal accent with slow, independent motion.
+The waves adapt to light and dark mode, pause in hidden tabs, and stay still
+when reduced motion is enabled.
+
 Choose **Use my location** in weather settings to follow your device as you
 move. Location updates run when opening a new tab, roughly every five minutes
 while it is visible, and on manual refresh. Cities selected through search stay
