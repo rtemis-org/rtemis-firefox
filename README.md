@@ -4,6 +4,17 @@ Firefox extension that applies the rtemis color theme (system / light / dark) an
 replaces the new tab page with a clock, weather, search, and an optional
 Hacker News panel.
 
+Choose **Use my location** in weather settings to follow your device as you
+move. Location updates run when opening a new tab, roughly every five minutes
+while it is visible, and on manual refresh. Cities selected through search stay
+fixed. If you saved a location in an older version, select **Use my location**
+once to enable automatic updates.
+
+Expand Hacker News with the down arrow beneath search; collapse it with the
+up arrow in its header. Switch between **Top**, **New**, **Best**, **Ask**, and
+**Show** using the header links. Each new tab starts on Top, and the Hacker News
+heading opens the selected feed on the website. Each feed is cached separately.
+
 ## Layout
 
 - `manifest.json` — extension manifest (MV2)
@@ -20,6 +31,8 @@ npx web-ext lint    # optional: run the AMO validator locally
 ```
 
 Load `manifest.json` via `about:debugging` → *This Firefox* → *Load Temporary Add-on* for development.
+
+Run the weather and news regression tests with `node --test tests/*.test.cjs`.
 
 ## Privacy
 

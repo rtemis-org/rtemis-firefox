@@ -1,7 +1,13 @@
 // rtemis new tab: clock + weather card wiring.
 
 const WEATHER_TTL_MS = 15 * 60 * 1000;   // reuse cached reading for 15 min
+const LOCATION_TTL_MS = 5 * 60 * 1000;   // recheck device location while visible
 const STORAGE_KEYS = ["location", "weather"];
+let weatherRequest = 0;
+let lastLocationAttempt = 0;
+let locationUnavailable = false;
+
+const locationKey = (lat, lon) => `${lat.toFixed(3)},${lon.toFixed(3)}`;
 
 const $ = (id) => document.getElementById(id);
 
@@ -45,7 +51,7 @@ const setState = (s) => { card.dataset.state = s; };
 
 function fmtTempBoth(c) { return `${Math.round(c)}°C / ${Math.round(Weather.cToF(c))}°F`; }
 
-function render(w, place, stale) {
+function render(w, place, stale, staleReason = "offline · cached") {
   $("w-place").textContent = place;
   $("w-icon").setAttribute("href", Weather.iconRef(w.iconKey, w.isDay));
   $("w-temp-c").textContent = Math.round(w.tempC);
@@ -59,6 +65,7 @@ function render(w, place, stale) {
   $("w-wind").textContent = `${Math.round(w.windKmh)} km/h · ${Math.round(Weather.kmhToMph(w.windKmh))} mph`;
   $("w-updated").textContent = `Updated ${relTime(w.fetchedAt)}`;
   $("w-stale").hidden = !stale;
+  $("w-stale").textContent = staleReason;
   setState("live");
 }
 
@@ -70,33 +77,78 @@ function relTime(ts) {
   return h === 1 ? "1 hour ago" : `${h} hours ago`;
 }
 
-async function loadWeather({ force = false } = {}) {
-  const { location, weather } = await browser.storage.local.get(STORAGE_KEYS);
+async function locationIsCurrent(location, request) {
+  const { location: saved } = await browser.storage.local.get("location");
+  return request === weatherRequest && saved?.key === location.key &&
+    saved?.source === location.source;
+}
+
+async function loadWeather({ force = false, checkLocation = true } = {}) {
+  const request = ++weatherRequest;
+  let { location, weather } = await browser.storage.local.get(STORAGE_KEYS);
+  if (request !== weatherRequest) return;
   if (!location) { setState("setup"); return; }
 
+  if (weather && weather.locKey === location.key) {
+    render(weather, location.name, Date.now() - weather.fetchedAt >= WEATHER_TTL_MS);
+  } else {
+    setState("loading");
+  }
+
+  // Only an explicit device-location choice follows the user. Older records
+  // have no source, so preserve them as fixed cities until the user opts in.
+  if (location.source === "device" && checkLocation &&
+      (force || Date.now() - lastLocationAttempt >= LOCATION_TTL_MS)) {
+    try {
+      const { coords: { latitude: lat, longitude: lon } } = await getPosition({
+        enableHighAccuracy: false, timeout: 20000, maximumAge: 0,
+      });
+      if (request !== weatherRequest) return;
+      const key = locationKey(lat, lon);
+      const name = key === location.key ? location.name :
+        (await Weather.reverseName(lat, lon)) || "My location";
+      // Another new tab may have selected a city while this fix was pending.
+      if (!await locationIsCurrent(location, request)) return;
+      location = { name, lat, lon, key, source: "device" };
+      await browser.storage.local.set({ location });
+      if (request !== weatherRequest) return;
+      locationUnavailable = false;
+    } catch (err) {
+      if (request !== weatherRequest) return;
+      console.warn("geolocation refresh failed:", err);
+      locationUnavailable = true;
+    }
+    lastLocationAttempt = Date.now();
+  }
+
+  const locationStale = location.source === "device" && locationUnavailable;
+  const staleReason = locationStale ? "location unavailable" : "offline · cached";
   const cachedFresh = weather && weather.locKey === location.key &&
                       Date.now() - weather.fetchedAt < WEATHER_TTL_MS;
 
   if (cachedFresh && !force) {
-    render(weather, location.name, false);
+    render(weather, location.name, locationStale, staleReason);
     return;
   }
 
   if (weather && weather.locKey === location.key) {
-    render(weather, location.name, false);   // show stale immediately, refresh behind it
+    render(weather, location.name, true, staleReason);   // refresh behind the cached reading
   } else {
     setState("loading");
   }
 
   try {
     const w = await Weather.fetchForecast(location.lat, location.lon);
+    if (!await locationIsCurrent(location, request)) return;
     w.locKey = location.key;
     await browser.storage.local.set({ weather: w });
-    render(w, location.name, false);
+    if (request !== weatherRequest) return;
+    render(w, location.name, locationStale, staleReason);
   } catch (err) {
+    if (request !== weatherRequest) return;
     console.warn("weather fetch failed:", err);
     if (weather && weather.locKey === location.key) {
-      render(weather, location.name, true);
+      render(weather, location.name, true, staleReason);
     } else {
       setState("setup");
       $("setup-error").textContent = "Couldn't reach the weather service.";
@@ -105,14 +157,18 @@ async function loadWeather({ force = false } = {}) {
 }
 
 async function saveLocation(loc) {
-  loc.key = `${loc.lat.toFixed(3)},${loc.lon.toFixed(3)}`;
+  const request = ++weatherRequest;
+  loc.key = locationKey(loc.lat, loc.lon);
+  locationUnavailable = false;
   await browser.storage.local.set({ location: loc });
+  if (request !== weatherRequest) return;
   await browser.storage.local.remove("weather");
+  if (request !== weatherRequest) return;
   $("city-input").value = "";
   $("city-results").replaceChildren();
   $("setup-error").textContent = "";
   $("setup-cancel").hidden = true;
-  loadWeather({ force: true });
+  await loadWeather({ force: true, checkLocation: false });
 }
 
 /* --- city search --- */
@@ -143,7 +199,7 @@ function pick(i) {
   const r = results[i];
   if (!r) return;
   // City only, matching what reverseName() returns for "Use my location".
-  saveLocation({ name: r.name, lat: r.lat, lon: r.lon });
+  return saveLocation({ name: r.name, lat: r.lat, lon: r.lon, source: "manual" });
 }
 
 $("city-input").addEventListener("input", (e) => {
@@ -194,6 +250,7 @@ function getPosition(opts) {
 }
 
 $("use-geo").addEventListener("click", async () => {
+  const request = ++weatherRequest;
   const btn = $("use-geo");
   if (!navigator.geolocation) { $("setup-error").textContent = "Geolocation unavailable."; return; }
   btn.disabled = true;
@@ -202,17 +259,21 @@ $("use-geo").addEventListener("click", async () => {
   try {
     let pos;
     try {
-      // Fast path: accept a recent cached fix.
-      pos = await getPosition({ enableHighAccuracy: false, timeout: 20000, maximumAge: 600000 });
+      pos = await getPosition({ enableHighAccuracy: false, timeout: 20000, maximumAge: 0 });
     } catch (e) {
+      if (request !== weatherRequest) return;
       if (e.code === e.PERMISSION_DENIED) throw e;
       // Retry once, forcing a fresh fix (helps with cold-start CoreLocation).
       pos = await getPosition({ enableHighAccuracy: true, timeout: 25000, maximumAge: 0 });
     }
+    if (request !== weatherRequest) return;
     const { latitude: lat, longitude: lon } = pos.coords;
     const name = (await Weather.reverseName(lat, lon)) || "My location";
-    saveLocation({ name, lat, lon });
+    if (request !== weatherRequest) return;
+    lastLocationAttempt = Date.now();
+    await saveLocation({ name, lat, lon, source: "device" });
   } catch (err) {
+    if (request !== weatherRequest) return;
     console.warn("geolocation failed:", err);
     $("setup-error").textContent = geoErrorMessage(err);
   } finally {
@@ -239,6 +300,7 @@ $("w-refresh").addEventListener("click", async () => {
 /* --- change location --- */
 
 $("w-settings").addEventListener("click", () => {
+  ++weatherRequest;
   $("setup-cancel").hidden = false;
   setState("setup");
   $("city-input").focus();
@@ -289,7 +351,7 @@ loadThemeMode();
 
 // Refresh the "updated N min ago" label and re-fetch when the TTL lapses while the tab stays open.
 setInterval(() => {
-  if (card.dataset.state === "live") loadWeather();
+  if (!document.hidden && card.dataset.state === "live") loadWeather();
 }, 60000);
 
 document.addEventListener("visibilitychange", () => {

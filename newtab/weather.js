@@ -4,7 +4,7 @@
 const Weather = (() => {
   const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
   const GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search";
-  const REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"; // only used for "Use my location" naming
+  const REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"; // names device locations
 
   // WMO weather interpretation codes -> label + icon key
   const WMO = {

@@ -7,6 +7,15 @@ const News = (() => {
   const HN = "https://news.ycombinator.com";
   const COUNT = 30;   // list scrolls; ~8 rows are visible at a time
   const TTL_MS = 10 * 60 * 1000;
+  const FEEDS = {
+    top: { label: "Top", endpoint: "topstories", path: "/" },
+    new: { label: "New", endpoint: "newstories", path: "/newest" },
+    best: { label: "Best", endpoint: "beststories", path: "/best" },
+    ask: { label: "Ask", endpoint: "askstories", path: "/ask" },
+    show: { label: "Show", endpoint: "showstories", path: "/show" },
+  };
+  let activeFeed = "top";
+  let loadRequest = 0;
 
   const $ = (id) => document.getElementById(id);
   const hero = document.querySelector(".hero");
@@ -14,6 +23,7 @@ const News = (() => {
   const list = $("news-list");
   const status = $("news-status");
   const showBtn = $("news-show");
+  const feedButtons = $("news-feeds").querySelectorAll("button[data-feed]");
 
   /* --- fetching --- */
 
@@ -33,8 +43,8 @@ const News = (() => {
     try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return ""; }
   }
 
-  async function fetchTop(n = COUNT) {
-    const ids = await getJSON(`${API}/topstories.json`);
+  async function fetchStories(feed, n = COUNT) {
+    const ids = await getJSON(`${API}/${FEEDS[feed].endpoint}.json`);
     const items = await Promise.all(
       ids.slice(0, n).map((id) => getJSON(`${API}/item/${id}.json`).catch(() => null))
     );
@@ -101,23 +111,57 @@ const News = (() => {
   /* --- loading with cache --- */
 
   async function load({ force = false } = {}) {
-    const { news } = await browser.storage.local.get("news");
-    const fresh = news && Date.now() - news.fetchedAt < TTL_MS;
+    const feed = activeFeed;
+    const request = ++loadRequest;
+    const isCurrent = () => request === loadRequest && feed === activeFeed && !box.hidden;
+    const cacheKey = `newsFeedCache.${feed}`;
+    const saved = await browser.storage.local.get(feed === "top" ? [cacheKey, "news"] : [cacheKey]);
+    if (!isCurrent()) return;
+    // Existing installations can reuse their original Top cache.
+    const news = saved[cacheKey] || (feed === "top" ? saved.news : null);
+    const hasCache = Array.isArray(news?.items);
+    const fresh = hasCache && Date.now() - news.fetchedAt < TTL_MS;
 
-    if (news?.items?.length) render(news.items);
+    setStatus("");
+    if (hasCache) render(news.items);
     else renderSkeleton();
-    if (fresh && !force) { setStatus(""); return; }
+    if (fresh && !force) { setStatus(news.items.length ? "" : "No stories right now."); return; }
 
     try {
-      const items = await fetchTop();
-      await browser.storage.local.set({ news: { fetchedAt: Date.now(), items } });
+      const items = await fetchStories(feed);
+      if (!isCurrent()) return;
+      await browser.storage.local.set({ [cacheKey]: { fetchedAt: Date.now(), items } });
+      if (!isCurrent()) return;
       render(items);
-      setStatus("");
+      setStatus(items.length ? "" : "No stories right now.");
     } catch (err) {
+      if (!isCurrent()) return;
       console.warn("news fetch failed:", err);
-      if (news?.items?.length) setStatus("Offline · showing cached stories");
+      if (hasCache) setStatus("Offline · showing cached stories");
       else { list.replaceChildren(); setStatus("Couldn't reach Hacker News.", true); }
     }
+  }
+
+  /* --- feed selection (Top on every new tab) --- */
+
+  function selectFeed(feed) {
+    if (!Object.hasOwn(FEEDS, feed)) return;
+    activeFeed = feed;
+    for (const btn of feedButtons) {
+      btn.setAttribute("aria-pressed", String(btn.dataset.feed === feed));
+    }
+    $("news-title").href = `${HN}${FEEDS[feed].path}`;
+    list.setAttribute("aria-label", `${FEEDS[feed].label} stories`);
+    list.scrollTop = 0;
+    setStatus("");
+    renderSkeleton();
+    return load();
+  }
+
+  for (const btn of feedButtons) {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.feed !== activeFeed) return selectFeed(btn.dataset.feed);
+    });
   }
 
   /* --- on/off --- */
@@ -125,18 +169,23 @@ const News = (() => {
   function setEnabled(on) {
     box.hidden = !on;
     showBtn.hidden = on;
+    showBtn.setAttribute("aria-expanded", String(on));
     hero.classList.toggle("has-news", on);
-    if (on) load();
+    if (on) return load();
+    ++loadRequest;
   }
 
   showBtn.addEventListener("click", () => {
     browser.storage.local.set({ newsEnabled: true });
-    setEnabled(true);
+    const loading = setEnabled(true);
+    $("news-hide").focus();
+    return loading;
   });
 
   $("news-hide").addEventListener("click", () => {
     browser.storage.local.set({ newsEnabled: false });
     setEnabled(false);
+    showBtn.focus();
   });
 
   $("news-refresh").addEventListener("click", async () => {

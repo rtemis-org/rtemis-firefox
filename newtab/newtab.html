@@ -37,7 +37,7 @@
         <input type="search" id="city-input" placeholder="Search city…" aria-label="Search city" spellcheck="false">
         <ul class="city-results" id="city-results" role="listbox"></ul>
       </form>
-      <button type="button" class="btn-ghost" id="use-geo">Use my location</button>
+      <button type="button" class="btn-ghost" id="use-geo" title="Keep weather updated as your location changes">Use my location</button>
       <button type="button" class="btn-link" id="setup-cancel" hidden>Cancel</button>
       <div class="setup-error" id="setup-error"></div>
     </div>
@@ -111,20 +111,29 @@
     <!-- Hacker News (optional, off by default) -->
     <section class="news" id="news" aria-label="Hacker News" hidden>
       <header class="news-head">
-        <a class="news-title" href="https://news.ycombinator.com">Hacker News</a>
+        <a class="news-title" id="news-title" href="https://news.ycombinator.com/">Hacker News</a>
+        <div class="news-feeds" id="news-feeds" role="group" aria-label="Hacker News feeds">
+          <button type="button" data-feed="top" aria-pressed="true" aria-controls="news-list">Top</button>
+          <button type="button" data-feed="new" aria-pressed="false" aria-controls="news-list">New</button>
+          <button type="button" data-feed="best" aria-pressed="false" aria-controls="news-list">Best</button>
+          <button type="button" data-feed="ask" aria-pressed="false" aria-controls="news-list">Ask</button>
+          <button type="button" data-feed="show" aria-pressed="false" aria-controls="news-list">Show</button>
+        </div>
         <span class="head-actions">
           <button type="button" class="icon-btn" id="news-refresh" title="Refresh" aria-label="Refresh news">
             <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 12a8 8 0 1 1-2.34-5.66M20 4v4.5h-4.5"/></svg>
           </button>
-          <button type="button" class="icon-btn" id="news-hide" title="Hide news" aria-label="Hide news">
-            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+          <button type="button" class="icon-btn news-collapse" id="news-hide" title="Hide Hacker News" aria-label="Hide Hacker News" aria-expanded="true" aria-controls="news">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m6 14 6-6 6 6"/></svg>
           </button>
         </span>
       </header>
-      <ol class="news-list" id="news-list"></ol>
-      <div class="news-status" id="news-status" hidden></div>
+      <ol class="news-list" id="news-list" aria-label="Top stories"></ol>
+      <div class="news-status" id="news-status" role="status" hidden></div>
     </section>
-    <button type="button" class="btn-link news-show" id="news-show" hidden>Show Hacker News</button>
+    <button type="button" class="news-show" id="news-show" title="Show Hacker News" aria-label="Show Hacker News" aria-expanded="false" aria-controls="news" hidden>
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m6 10 6 6 6-6"/></svg>
+    </button>
   </main>
 
   <!-- Bottom-left: theme mode -->
