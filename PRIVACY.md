@@ -11,8 +11,8 @@ The extension uses Firefox's `storage.local` to remember, on your device only:
 - the location you chose for the weather card, whether it follows your device,
   and the last fetched forecast
 - your chosen search engine for the new tab search box
-- whether the Hacker News panel is shown, and the last fetched headlines for
-  each feed you view
+- whether the news panel is shown, the selected news source, and the cached
+  headlines and request times for each feed you view
 
 Removing the extension deletes this data.
 
@@ -26,7 +26,8 @@ identifiers other than what is listed are sent.
 | `api.open-meteo.com` | loading the weather card | latitude/longitude of your chosen location |
 | `geocoding-api.open-meteo.com` | searching for a city in weather setup | the city name you typed |
 | `nominatim.openstreetmap.org` | when you enable "Use my location" and when the device location changes | your device's coordinates, to obtain a place name |
-| `hacker-news.firebaseio.com` | only if you enable the Hacker News panel | none |
+| `hacker-news.firebaseio.com` | when the news panel is enabled and Hacker News is selected | none |
+| `rss.slashdot.org` | when the news panel is enabled and Slashdot is selected | none |
 
 Searches from the new tab box are run through the search engine you selected
 in Firefox, using Firefox's own search API; the extension does not see or

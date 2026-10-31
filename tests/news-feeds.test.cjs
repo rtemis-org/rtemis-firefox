@@ -6,7 +6,6 @@ const vm = require('node:vm');
 
 const script = readFileSync(join(__dirname, '../newtab/news.js'), 'utf8');
 const feeds = ['top', 'new', 'best', 'ask', 'show'];
-const paths = ['/', '/newest', '/best', '/ask', '/show'];
 const endpoints = ['topstories', 'newstories', 'beststories', 'askstories', 'showstories'];
 const settle = async () => { for (let i = 0; i < 8; i++) await new Promise(setImmediate); };
 function deferred() {
@@ -38,11 +37,11 @@ async function harness({ storage = { newsEnabled: true }, fetchJSON } = {}) {
   function element(id) { if (!elements.has(id)) elements.set(id, node(id)); return elements.get(id); }
   const buttons = feeds.map(feed => { const n = node('button'); n.dataset.feed = feed; n.attributes['aria-pressed'] = String(feed === 'top'); return n; });
   element('news-feeds').querySelectorAll = () => buttons;
-  element('news-title').href = 'https://news.ycombinator.com/';
   element('news').hidden = true;
   element('news-show').hidden = true;
   const context = vm.createContext({
     console: { warn() {} }, URL, Date, AbortController,
+    navigator: { locks: { request: async (_name, run) => run() } },
     setTimeout: () => 1, clearTimeout() {}, requestAnimationFrame: fn => fn(),
     window: { addEventListener() {} },
     document: { hidden: false, createElement: node, getElementById: element,
@@ -73,13 +72,12 @@ async function harness({ storage = { newsEnabled: true }, fetchJSON } = {}) {
   };
 }
 
-test('all five feeds use their own endpoint, selected state, heading link, and cache', async () => {
+test('all five feeds use their own endpoint, selected state and cache', async () => {
   const h = await harness();
   for (let i = 0; i < feeds.length; i++) {
     const feed = feeds[i];
     await h.select(feed);
     assert.deepEqual(h.titles(), [`${feed} item`]);
-    assert.equal(h.element('news-title').href, `https://news.ycombinator.com${paths[i]}`);
     assert.equal(h.buttons.filter(b => b.attributes['aria-pressed'] === 'true').length, 1);
     assert.equal(h.buttons[i].attributes['aria-pressed'], 'true');
     assert.ok(h.state[`newsFeedCache.${feed}`]);
@@ -135,7 +133,6 @@ test('a late feed response cannot overwrite the newly selected feed', async () =
   pending.resolve([1]);
   await settle();
   assert.deepEqual(h.titles(), ['Ask result']);
-  assert.equal(h.element('news-title').href, 'https://news.ycombinator.com/ask');
   assert.equal(h.state['newsFeedCache.top'], undefined);
 });
 
@@ -189,4 +186,50 @@ test('collapse discards pending results without reopening the panel', async () =
   await settle();
   assert.equal(h.element('news').hidden, true);
   assert.equal(h.state['newsFeedCache.top'], undefined);
+});
+
+
+test('Slashdot source persists, starts on Main, and never uses HN caches', async () => {
+  const h = await harness({ storage: { newsEnabled: true, newsSource: 'slashdot', 'newsFeedCache.slashdot.main': cached('Slashdot main'), news: cached('HN legacy') } });
+  assert.deepEqual(h.titles(), ['Slashdot main']);
+  assert.equal(h.requests.length, 0);
+  assert.equal(h.element('news-feeds').hidden, true);
+  assert.equal(h.element('slashdot-feeds').children.length, 8);
+  await h.click('news-source-hn');
+  assert.equal(h.state.newsSource, 'hn');
+  assert.deepEqual(h.titles(), ['HN legacy']);
+  await h.click('news-source-slashdot');
+  assert.equal(h.state.newsSource, 'slashdot');
+  assert.deepEqual(h.titles(), ['Slashdot main']);
+});
+
+test('Slashdot refresh respects the thirty-minute cache interval', async () => {
+  const news = cached('Main');
+  news.fetchedAt -= 20 * 60 * 1000;
+  const h = await harness({ storage: { newsEnabled: true, newsSource: 'slashdot', 'newsFeedCache.slashdot.main': news } });
+  await h.refresh();
+  assert.equal(h.requests.length, 0);
+  assert.deepEqual(h.titles(), ['Main']);
+});
+
+test('Slashdot failed requests are throttled and do not expose HN cached stories', async () => {
+  const h = await harness({ storage: { newsEnabled: true, newsSource: 'slashdot', news: cached('HN'), 'newsFeedCache.slashdot.main.attemptedAt': Date.now() } });
+  await h.refresh();
+  assert.equal(h.requests.length, 0);
+  assert.deepEqual(h.titles(), []);
+  assert.match(h.element('news-status').textContent, /30 minutes/);
+});
+
+test('Slashdot feed selection uses its own cache', async () => {
+  const h = await harness({ storage: { newsEnabled: true, newsSource: 'slashdot', 'newsFeedCache.slashdot.main': cached('Main'), 'newsFeedCache.slashdot.linux': cached('Linux') } });
+  h.element('slashdot-feeds').value = 'linux';
+  await h.element('slashdot-feeds').listeners.change();
+  assert.deepEqual(h.titles(), ['Linux']);
+  assert.equal(h.requests.length, 0);
+});
+
+test('a hidden panel does not fetch the remembered Slashdot source', async () => {
+  const h = await harness({ storage: { newsSource: 'slashdot' } });
+  assert.equal(h.requests.length, 0);
+  assert.equal(h.element('news').hidden, true);
 });

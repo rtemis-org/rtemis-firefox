@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "rtemis",
-  "version": "1.0.1",
-  "description": "rtemis color theme with system, light, and dark modes, plus a new tab page with clock, weather, search, and optional Hacker News.",
+  "version": "1.0.2",
+  "description": "rtemis color theme with system, light, and dark modes, plus a new tab page with clock, weather, search, and optional Hacker News and Slashdot.",
   "homepage_url": "https://github.com/rtemis-org/rtemis-firefox",
   "browser_specific_settings": {
     "gecko": {
@@ -35,7 +35,8 @@
   "permissions": [
     "theme",
     "storage",
-    "search"
+    "search",
+    "https://rss.slashdot.org/*"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab/newtab.html"

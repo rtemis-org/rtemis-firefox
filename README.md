@@ -2,7 +2,7 @@
 
 Firefox extension that applies the rtemis color theme (system / light / dark) and
 replaces the new tab page with a clock, weather, search, and an optional
-Hacker News panel.
+Hacker News and Slashdot panel.
 
 The new tab background uses faint SVG waves in the shared teal accent with slow, independent motion.
 The waves adapt to light and dark mode, pause in hidden tabs, and stay still
@@ -14,17 +14,27 @@ while it is visible, and on manual refresh. Cities selected through search stay
 fixed. If you saved a location in an older version, select **Use my location**
 once to enable automatic updates.
 
-Expand Hacker News with the down arrow beneath search; collapse it with the
-up arrow in its header. Switch between **Top**, **New**, **Best**, **Ask**, and
-**Show** using the header links. Each new tab starts on Top, and the Hacker News
-heading opens the selected feed on the website. Each feed is cached separately.
+Expand news with the down arrow beneath search; collapse it with the up arrow.
+Switch between **Hacker News** and **Slashdot** in the panel header. The selected
+source is remembered across new tabs; Hacker News is the initial default.
+Hacker News offers **Top**, **New**, **Best**, **Ask**, and **Show**. Slashdot offers
+**Main**, **Ask Slashdot**, **Linux**, **Developers**, **Science**, **Games**,
+**Politics**, and **Your Rights Online** in a dropdown. Each new tab starts on
+Top or Main. Source, feed, refresh, and collapse controls share one header row;
+on narrow screens, the feed controls wrap below the source selector.
+
+Only the selected feed is fetched. Each feed has its own cache: ten minutes for
+Hacker News and thirty minutes for Slashdot. Slashdot refresh also respects its
+[thirty-minute request interval](https://search.slashdot.org/faq/feeds.shtml),
+including across open tabs and after failed requests. Slashdot feed access uses
+a host permission limited to `https://rss.slashdot.org/*`.
 
 ## Layout
 
 - `manifest.json` — extension manifest (MV2)
 - `background.js` — background script: sets the theme and follows the system color scheme
 - `popup/` — toolbar popup with the theme mode toggle
-- `newtab/` — new tab page (clock, weather via Open-Meteo, search via the browser's own engines, opt-in Hacker News)
+- `newtab/` — new tab page (clock, weather via Open-Meteo, search via the browser's own engines, opt-in Hacker News and Slashdot)
 - `icons/` — extension and listing icons
 
 ## Build
