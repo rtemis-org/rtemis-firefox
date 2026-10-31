@@ -1,8 +1,6 @@
 # rtemis for Firefox
 
-Firefox extension that applies the rtemis color theme (system / light / dark) and
-replaces the new tab page with a clock, weather, search, and an optional
-Hacker News and Slashdot panel.
+Firefox extension that applies the rtemis color theme, provides a direct system / light / dark mode toggle, and replaces the new tab page with a clock, weather, search, and an optional Hacker News and Slashdot panel.
 
 The new tab background uses faint SVG waves in the shared teal accent with slow, independent motion.
 The waves adapt to light and dark mode, pause in hidden tabs, and stay still
