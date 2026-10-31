@@ -6,7 +6,7 @@
   /* light */
   --bg-color: rgb(244, 244, 244);
   --bg-image: none;
-  --wave-fill-opacity: 0.065;
+  --wave-fill-opacity: 0.08;
   --wave-line-opacity: 0.13;
   --fg: rgb(51, 51, 51);
   --fg-muted: rgb(110, 110, 110);
@@ -73,13 +73,13 @@ body {
 }
 .wave-layer {
   color: var(--accent);
-  animation: wave-drift 38s ease-in-out infinite;
+  animation: wave-drift 24s ease-in-out infinite;
 }
-.wave-layer-1 { animation-duration: 43s; animation-delay: -18s; }
-.wave-layer-2 { animation-duration: 37s; animation-delay: -6s; }
-.wave-layer-3 { animation-duration: 41s; animation-delay: -24s; }
-.wave-layer-4 { animation-duration: 34s; animation-delay: -11s; }
-.wave-layer-5 { animation-duration: 45s; animation-delay: -31s; }
+.wave-layer-1 { animation-duration: 26s; animation-delay: -18s; }
+.wave-layer-2 { animation-duration: 22s; animation-delay: -6s; }
+.wave-layer-3 { animation-duration: 24s; animation-delay: -24s; }
+.wave-layer-4 { animation-duration: 20s; animation-delay: -11s; }
+.wave-layer-5 { animation-duration: 28s; animation-delay: -31s; }
 .wave-fill { fill: currentColor; opacity: var(--wave-fill-opacity); }
 .wave-line {
   fill: none;
