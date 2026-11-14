@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 VERSION=$(python3 -c "import json; print(json.load(open('manifest.json'))['version'])")
 OUT="rtemis-${VERSION}.xpi"
 rm -f "$OUT"
-zip -r -X "$OUT" manifest.json background.js icons/favicon.svg newtab popup \
+zip -r -X "$OUT" manifest.json background.js page-windows.js icons/logomark.svg newtab popup \
   -x '*.DS_Store' '__MACOSX/*' '*/.*'
 echo "Built $OUT"
 unzip -l "$OUT"

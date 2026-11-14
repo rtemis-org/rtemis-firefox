@@ -125,6 +125,37 @@ a { color: inherit; text-decoration: none; }
 }
 .theme-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
+/* ---------- page windows ---------- */
+
+.window-actions {
+  display: flex;
+  gap: 6px;
+  margin: 0 14px 4px;
+}
+.window-actions button {
+  flex: 1;
+  padding: 6px 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.window-actions button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--hover-bg);
+}
+.window-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.window-actions button:disabled { opacity: .5; cursor: wait; }
+.window-error {
+  margin: 6px 14px 4px;
+  color: var(--fg-muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
 /* ---------- rows ---------- */
 
 .row {

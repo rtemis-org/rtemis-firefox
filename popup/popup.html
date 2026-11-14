@@ -8,7 +8,7 @@
 <body>
 
   <header class="head">
-    <img class="mark" src="../icons/favicon.svg" width="20" height="20" alt="">
+    <img class="mark" src="../icons/logomark.svg" width="20" height="20" alt="">
     <span class="title">rtemis</span>
   </header>
 
@@ -20,6 +20,15 @@
       <button type="button" role="radio" aria-checked="false" data-mode="light">Light</button>
       <button type="button" role="radio" aria-checked="false" data-mode="dark">Dark</button>
     </div>
+  </section>
+
+  <section class="section" aria-labelledby="page-label">
+    <div class="label" id="page-label">Current page</div>
+    <div class="window-actions" id="window-actions">
+      <button type="button" data-window-state="normal" title="Move the current tab to a window without browser toolbars">App window</button>
+      <button type="button" data-window-state="fullscreen" title="Move the current tab to a full-screen window without browser toolbars">Full screen</button>
+    </div>
+    <p class="window-error" id="window-error" role="alert" hidden></p>
   </section>
 
   <nav class="section" aria-label="rtemis links">

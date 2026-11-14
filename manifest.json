@@ -16,28 +16,38 @@
     }
   },
   "icons": {
-    "48": "icons/favicon.svg",
-    "96": "icons/favicon.svg"
+    "48": "icons/logomark.svg",
+    "96": "icons/logomark.svg"
   },
   "browser_action": {
     "default_icon": {
-      "16": "icons/favicon.svg",
-      "32": "icons/favicon.svg"
+      "16": "icons/logomark.svg",
+      "32": "icons/logomark.svg"
     },
     "default_title": "rtemis",
     "default_popup": "popup/popup.html"
   },
   "background": {
     "scripts": [
-      "background.js"
+      "background.js",
+      "page-windows.js"
     ]
   },
   "permissions": [
     "theme",
     "storage",
     "search",
+    "menus",
     "https://rss.slashdot.org/*"
   ],
+  "commands": {
+    "return-to-regular-window": {
+      "suggested_key": {
+        "default": "Alt+Shift+R"
+      },
+      "description": "Return to regular window without reloading"
+    }
+  },
   "chrome_url_overrides": {
     "newtab": "newtab/newtab.html"
   }
